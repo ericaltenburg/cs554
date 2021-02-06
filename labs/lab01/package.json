@@ -1,0 +1,15 @@
+{
+  "name": "lab01",
+  "version": "1.0.0",
+  "description": "CS-554 Lab 1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Eric Altenburg 10443481",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.6.4"
+  }
+}
