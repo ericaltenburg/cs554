@@ -15,12 +15,10 @@ router.get('/', async (req, res) => {
         let takeAmt = req.query.take;
         takeAmt = parseInt(takeAmt);
 
-        
-
         const listOfMovies = await moviesData.getN(skipAmt, takeAmt);
         res.status(200).json(listOfMovies);
     } catch (e) {
-        res.status(500).json({error: "hello"});
+        res.status(500).json({error: e});
     }
 });
 
@@ -75,6 +73,54 @@ router.post('/', async (req, res) => {
     try {
         const createdMovie = await moviesData.create(movieInfo.title, movieInfo.cast, movieInfo.info, movieInfo.plot, movieInfo.rating);
         res.status(200).json(createdMovie);
+    } catch (e) {
+        res.status(400).json({error: e});
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({error: "No ID provided"});
+        return;
+    }
+
+    let movieInfo = req.body;
+
+    if (!movieInfo) {
+        res.status(400).json({error: 'No data provided to update a movie'});
+        return;
+    }
+    if (!movieInfo.title) {
+        res.status(400).json({error: 'No title provided'});
+        return;
+    }
+    if (!movieInfo.cast) {
+        res.status(400).json({error: 'No cast provided'});
+        return;
+    }
+    if (!movieInfo.info) {
+        res.status(400).json({error: 'No info provided'});
+        return;
+    }
+    if (!movieInfo.plot) {
+        res.status(400).json({error: 'No plot provided'});
+        return;
+    }
+    if (!movieInfo.rating) {
+        res.status(400).json({error: 'No rating provided'});
+        return;
+    }
+
+    try {
+        await moviesData.get(req.params.id);
+    } catch (e) {
+        res.status(404).json({error: "No movie associated with the ID"});
+        return;
+    }
+
+    try {
+        const movie = await moviesData.update(req.params.id, movieInfo);
+        res.status(200).json(movie);
     } catch (e) {
         res.status(400).json({error: e});
     }

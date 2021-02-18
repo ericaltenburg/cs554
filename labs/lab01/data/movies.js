@@ -103,39 +103,45 @@ async function getN (skipAmt, takeAmt) {
         skipAmt = 0;
     }
     checkIsProperNumber(takeAmt);
+    if (!takeAmt) {
+        takeAmt = 20;
+    }
     
     const moviesCollection = await movies();
-    const moviesListAll = await moviesCollection.find({}).toArray();
+    const moviesListAll = await moviesCollection.find({}).skip(skipAmt).limit(takeAmt).toArray();
+
+    // const moviesListAll = await moviesCollection.find({}).toArray();
 
     // Take off from the front
-    if (skipAmt > moviesListAll.length) {
-        skipAmt = moviesListAll.length;
-    }
+    // if (skipAmt > moviesListAll.length) {
+    //     skipAmt = moviesListAll.length;
+    // }
 
-    while (skipAmt > 0) {
-        moviesListAll.shift();
-        skipAmt--;
-    }
+
+    // while (skipAmt > 0) {
+    //     moviesListAll.shift();
+    //     skipAmt--;
+    // }
 
     // Take off from the back to match the size
-    if (!takeAmt) {
-        while (moviesListAll.length > 20) {
-            moviesListAll.pop();
-        }
-    } else {
-        if (takeAmt > moviesListAll.length) {
-            takeAmt = moviesListAll.length;
-        }
+    // if (!takeAmt) {
+    //     while (moviesListAll.length > 20) {
+    //         moviesListAll.pop();
+    //     }
+    // } else {
+    //     if (takeAmt > moviesListAll.length) {
+    //         takeAmt = moviesListAll.length;
+    //     }
 
-        if (takeAmt > 100) {
-            takeAmt = 100;
-        }
+    //     if (takeAmt > 100) {
+    //         takeAmt = 100;
+    //     }
 
-        while (takeAmt > 0) {
-            moviesListAll.pop();
-            takeAmt--;
-        }
-    }
+    //     while (takeAmt > 0) {
+    //         moviesListAll.pop();
+    //         takeAmt--;
+    //     }
+    // }
 
     moviesListAll.forEach( (value) => {
         value['_id'] = "" + value['_id'];
@@ -200,8 +206,50 @@ async function create (title, cast, info, plot, rating) {
     return aMovie;
 }
 
+/**
+ * Updates movie with the respective information, comments do not change, they are carried over.
+ * @param {string} id 
+ * @param {object} obj 
+ */
+async function update (id, obj) {
+    checkIsProperString(id);
+    id = id.trimStart();
+    // isEmpty(obj);
+    // checkIsProperString(obj.title);
+    // let title = obj.title.trimStart();
+    // checkIsProperCast(obj.cast);
+    // let cast = obj.cast;
+    // checkIsProperInfo(obj.info);
+    // let info = obj.info;
+    // checkIsProperString(obj.plot);
+    // let plot = obj.plot.trimStart();
+    // checkIsProperNumber(obj.rating);
+    // let rating = obj.rating;
+
+    // const moviesCollection = await movies();
+    // const oldMovie = await get(id);
+
+    // if (title) {
+
+    // }
+
+    const moviesCollection = await movies();
+    const oldMovie = await get(id);
+
+    let updatedMovieData = {};
+
+    if (obj.title) {
+        checkIsProperString(obj.title);
+        updatedMovieData.title = obj.title.trimStart();
+    }
+    if (obj.cast) {
+
+    }
+}
+
 module.exports = {
     getN,
-    get,
+    get,    
     create,
+    update,
 }
