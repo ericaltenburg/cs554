@@ -1,8 +1,10 @@
+const { request } = require('express');
 const express = require('express');
 const { movies } = require('../config/mongoCollections');
 const router = express.Router();
 const data = require('../data');
 const moviesData = data.movies;
+const lodash = require('lodash');
 
 /**
  * Gets the movies with the options to skip n amount or take x amount up to 100. 
@@ -78,9 +80,13 @@ router.post('/', async (req, res) => {
     }
 });
 
+/**
+ * PUT
+ * updates all the fields, must all be supplied except comments
+ */
 router.put('/:id', async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({error: "No ID provided"});
+        res.status(400).json({error: "No id provided"});
         return;
     }
 
@@ -114,16 +120,72 @@ router.put('/:id', async (req, res) => {
     try {
         await moviesData.get(req.params.id);
     } catch (e) {
-        res.status(404).json({error: "No movie associated with the ID"});
+        res.status(404).json({error: "No movie associated with the id"});
         return;
     }
 
     try {
-        const movie = await moviesData.update(req.params.id, movieInfo);
+        const movie = await moviesData.putUpdate(req.params.id, movieInfo);
         res.status(200).json(movie);
     } catch (e) {
         res.status(400).json({error: e});
     }
+});
+
+/**
+ * PATCH
+ * Updates fields but only those that were supplied. If no changes, then throws an error.
+ */
+router.patch('/:id', async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({error: 'No id was given'})
+    }
+
+    const requestBody = req.body;
+    let newMovieFields = {};
+
+    try {
+        const oldMovieFields = await moviesData.get(req.params.id);
+
+        if (requestBody.title && requestBody.title !== oldMovieFields.title) {
+            newMovieFields.title = requestBody.title;
+        }
+
+        if (requestBody.cast && !(lodash.isEqual(requestBody.cast, oldMovieFields.cast))) {
+            newMovieFields.cast = requestBody.cast;
+        }
+
+        if (requestBody.info && !(lodash.isEqual(requestBody.info, oldMovieFields.info))) {
+            newMovieFields.info = requestBody.info;
+        }
+
+        if (requestBody.plot && !(lodash.isEqual(requestBody.plot, oldMovieFields.plot))) {
+            newMovieFields.plot = requestBody.plot;
+        }
+
+        if (requestBody.rating && requestBody.rating !== oldMovieFields.rating) {
+            newMovieFields.rating = requestBody.rating;
+        }
+    } catch (e) {
+        res.status(404).json({error: e});
+        return;
+    }
+
+    if (Object.keys(newMovieFields).length !== 0) {
+        try {
+            const updatedMovie = await moviesData.patchUpdate(req.params.id, newMovieFields);
+            res.status(200).json(updatedMovie);
+        } catch (e) {
+            res.status(400).json({error: e});
+        }
+    } else {
+        res.status(400).json({error: "No fields have been changed from their initial values, so no patch has occurred"});
+    }
+});
+
+router.post('/:id/comments', async (req, res) => {
+    console.log(req.params.id);
+    return;
 });
 
 module.exports = router;

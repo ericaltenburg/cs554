@@ -207,49 +207,97 @@ async function create (title, cast, info, plot, rating) {
 }
 
 /**
+ * PUT
  * Updates movie with the respective information, comments do not change, they are carried over.
  * @param {string} id 
  * @param {object} obj 
  */
-async function update (id, obj) {
+async function putUpdate (id, obj) {
     checkIsProperString(id);
     id = id.trimStart();
-    // isEmpty(obj);
-    // checkIsProperString(obj.title);
-    // let title = obj.title.trimStart();
-    // checkIsProperCast(obj.cast);
-    // let cast = obj.cast;
-    // checkIsProperInfo(obj.info);
-    // let info = obj.info;
-    // checkIsProperString(obj.plot);
-    // let plot = obj.plot.trimStart();
-    // checkIsProperNumber(obj.rating);
-    // let rating = obj.rating;
-
-    // const moviesCollection = await movies();
-    // const oldMovie = await get(id);
-
-    // if (title) {
-
-    // }
+    isEmpty(obj);
+    checkIsProperString(obj.title);
+    let title = obj.title.trimStart();
+    checkIsProperCast(obj.cast);
+    let cast = obj.cast;
+    checkIsProperInfo(obj.info);
+    let info = obj.info;
+    checkIsProperString(obj.plot);
+    let plot = obj.plot.trimStart();
+    checkIsProperNumber(obj.rating);
+    let rating = obj.rating;
 
     const moviesCollection = await movies();
-    const oldMovie = await get(id);
 
-    let updatedMovieData = {};
+
+    let updatedMovie = {
+        title,
+        cast,
+        info,
+        plot,
+        rating
+    };
+
+    id = ObjectId(id).valueOf();
+
+    const updateInfo = await moviesCollection.updateOne({_id: id}, {$set: updatedMovie});
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw `Error: Update failed`;
+
+    id = "" + id;
+
+    return await this.get(id);
+}
+
+/**
+ * PATCH
+ * Updates the movie with the respective information, comments do not change, only sets values
+ * if there is a change from previous values.
+ * @param {string} id 
+ * @param {object} obj 
+ */
+async function patchUpdate (id, obj) {
+    checkIsProperString(id);
+    id = id.trimStart();
+
+    isEmpty(obj);
+
+    const moviesCollection = await movies();
 
     if (obj.title) {
         checkIsProperString(obj.title);
-        updatedMovieData.title = obj.title.trimStart();
+        obj.title = obj.title.trimStart();
     }
-    if (obj.cast) {
 
+    if (obj.cast) {
+        checkIsProperCast(obj.cast);
     }
+
+    if (obj.info) {
+        checkIsProperInfo(obj.info);
+    }
+
+    if (obj.plot) {
+        checkIsProperString(obj.plot);
+        obj.plot = obj.plot.trimStart();
+    }
+
+    if (obj.rating) {
+        checkIsProperNumber(obj.rating);
+    }
+
+    id = ObjectId(id).valueOf();
+    const updateInfo = await moviesCollection.updateOne({_id: id}, {$set: obj});
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw `Error: Update failed`;
+
+    id = "" + id;
+
+    return await this.get(id);
 }
 
 module.exports = {
     getN,
     get,    
     create,
-    update,
+    putUpdate,
+    patchUpdate,
 }
