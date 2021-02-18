@@ -8,12 +8,10 @@ const getCollectionFn = (collection) => {
             const db = await dbConnection();
             _col = await db.collection(collection);
         }
-
         return _col;
     };
 };
 
 module.exports = {
-    movies: getCollectionFn('movies'),
-    comments: getCollectionFn('comments')
+    movies: getCollectionFn('movies')
 };
