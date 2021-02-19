@@ -1,7 +1,6 @@
 const mongoCollections = require('../config/mongoCollections');
 const movies = mongoCollections.movies;
 let { ObjectId } = require('mongodb');
-const { update } = require('../../lab06/data/books');
 
 /**
  * Verifies the number input
