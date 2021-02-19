@@ -1,6 +1,7 @@
 const mongoCollections = require('../config/mongoCollections');
 const movies = mongoCollections.movies;
 let { ObjectId } = require('mongodb');
+const { update } = require('../../lab06/data/books');
 
 /**
  * Verifies the number input
@@ -98,50 +99,21 @@ function checkIsProperInfo (obj) {
  * @param {number} takeAmt 
  */
 async function getN (skipAmt, takeAmt) {
-    checkIsProperNumber(skipAmt);
+    if (isNaN(skipAmt)) throw `Error: skip is NaN`;
     if (!skipAmt) {
         skipAmt = 0;
     }
-    checkIsProperNumber(takeAmt);
+    checkIsProperNumber(skipAmt);
+    
+    if (isNaN(takeAmt)) throw `Error: take is NaN`;
     if (!takeAmt) {
         takeAmt = 20;
     }
+    checkIsProperNumber(takeAmt);
+    
     
     const moviesCollection = await movies();
     const moviesListAll = await moviesCollection.find({}).skip(skipAmt).limit(takeAmt).toArray();
-
-    // const moviesListAll = await moviesCollection.find({}).toArray();
-
-    // Take off from the front
-    // if (skipAmt > moviesListAll.length) {
-    //     skipAmt = moviesListAll.length;
-    // }
-
-
-    // while (skipAmt > 0) {
-    //     moviesListAll.shift();
-    //     skipAmt--;
-    // }
-
-    // Take off from the back to match the size
-    // if (!takeAmt) {
-    //     while (moviesListAll.length > 20) {
-    //         moviesListAll.pop();
-    //     }
-    // } else {
-    //     if (takeAmt > moviesListAll.length) {
-    //         takeAmt = moviesListAll.length;
-    //     }
-
-    //     if (takeAmt > 100) {
-    //         takeAmt = 100;
-    //     }
-
-    //     while (takeAmt > 0) {
-    //         moviesListAll.pop();
-    //         takeAmt--;
-    //     }
-    // }
 
     moviesListAll.forEach( (value) => {
         value['_id'] = "" + value['_id'];
@@ -294,10 +266,91 @@ async function patchUpdate (id, obj) {
     return await this.get(id);
 }
 
+/**
+ * 
+ * @param {string} id 
+ * @param {string} name 
+ * @param {string} comment 
+ */
+async function createComment (id, name, comment) {
+    checkIsProperString(id);
+    id = id.trimStart();
+    checkIsProperString(name);
+    name = name.trimStart();
+    checkIsProperString(comment);
+    comment = comment.trimStart();
+
+    const moviesCollection = await movies();
+    const movie = await get(id);
+
+    const newComment = {
+        "_id": ObjectId(),
+        name,
+        comment
+    };
+
+    let comments = movie.comments;
+    comments.push(newComment);
+    let commentObj = {comments};
+
+    id = ObjectId(id).valueOf();
+
+    const updateInfo = await moviesCollection.updateOne({_id: id}, {$set: commentObj});
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw `Error: Update failed`;
+
+    id = "" + id;
+
+    return await this.get(id);
+}
+
+/**
+ * Removes the comment by commentId associated with the movieId.
+ * @param {string} movieId 
+ * @param {string} commendId 
+ */
+async function removeComment (movieId, commentId) {
+    checkIsProperString(movieId);
+    movieId = movieId.trimStart();
+    checkIsProperString(commentId);
+    commentId = commentId.trimStart();
+
+    const moviesCollection = await movies();
+    
+    const movie = await get(movieId);
+
+    let comments = movie.comments;
+
+    let index = -1;
+    comments.forEach ( (value, indx) => {
+        value._id = "" + value._id;
+        if (value._id === commentId) {
+            index = indx;
+        }
+    });
+
+    if (index > -1) {
+        comments.splice(index, 1);
+    } else {
+        throw `Error: The comment with an associated comment id was not found`
+    }
+
+    let updatedComments = {comments};
+
+    movieId = ObjectId(movieId).valueOf();
+    const updateInfo = await moviesCollection.updateOne({_id: movieId}, {$set: updatedComments});
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw `Error: Update failed`;
+
+    movieId = "" + movieId;
+
+    return await this.get(movieId);
+}
+
 module.exports = {
     getN,
     get,    
     create,
     putUpdate,
     patchUpdate,
+    createComment,
+    removeComment
 }

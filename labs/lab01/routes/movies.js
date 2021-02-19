@@ -5,6 +5,7 @@ const router = express.Router();
 const data = require('../data');
 const moviesData = data.movies;
 const lodash = require('lodash');
+const { take } = require('lodash');
 
 /**
  * Gets the movies with the options to skip n amount or take x amount up to 100. 
@@ -12,11 +13,18 @@ const lodash = require('lodash');
  */
 router.get('/', async (req, res) => {
     try {
-        let skipAmt = req.query.skip;
-        skipAmt = parseInt(skipAmt);
-        let takeAmt = req.query.take;
-        takeAmt = parseInt(takeAmt);
+        let skipAmt = null;
+        if (req.query.skip) {
+            skipAmt = req.query.skip;
+            skipAmt = parseInt(skipAmt);
+        }
 
+        let takeAmt = null;
+        if (req.query.take) {
+            takeAmt = req.query.take;
+            takeAmt = parseInt(takeAmt);
+        }   
+        
         const listOfMovies = await moviesData.getN(skipAmt, takeAmt);
         res.status(200).json(listOfMovies);
     } catch (e) {
@@ -37,7 +45,7 @@ router.get('/:id', async (req, res) => {
         const movie = await moviesData.get(req.params.id);
         res.status(200).json(movie);
     } catch (e) {
-        res.status(500).json({error: e});
+        res.status(500).json({error: "There is no movie associated with the id"});
     }
 });
 
@@ -138,7 +146,7 @@ router.put('/:id', async (req, res) => {
  */
 router.patch('/:id', async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({error: 'No id was given'})
+        res.status(400).json({error: 'No id provided'})
     }
 
     const requestBody = req.body;
@@ -167,7 +175,7 @@ router.patch('/:id', async (req, res) => {
             newMovieFields.rating = requestBody.rating;
         }
     } catch (e) {
-        res.status(404).json({error: e});
+        res.status(404).json({error: "There is no movie associated with the id"});
         return;
     }
 
@@ -183,9 +191,78 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+/**
+ * Creates a comment under the movie associated with the id
+ */
 router.post('/:id/comments', async (req, res) => {
-    console.log(req.params.id);
-    return;
+    if (!req.params.id) {
+        res.status(400).json({error: `No id provided`});
+        return;
+    }
+
+    try {
+        await moviesData.get(req.params.id);
+    } catch (e) {
+        res.status(404).json({error: "There is no movie associated with the id"})
+        return;
+    }
+
+    let commentInfo = req.body;
+    
+    if (!commentInfo) {
+        res.status(400).json({error: "No data provided to create a comment"});
+        return;
+    }
+    if (!commentInfo.name) {
+        res.status(400).json({error: "No name provided"});
+        return;
+    }
+    if (!commentInfo.comment) {
+        res.status(400).json({error: "No comment provided"});
+        return;
+    }
+
+    try {
+        const movieWithComment = await moviesData.createComment(req.params.id, commentInfo.name, commentInfo.comment);
+        res.status(200).json(movieWithComment);
+    } catch (e) {
+        res.status(400).json({error: e});
+    }
+});
+
+/**
+ * Deletes the comment given by commentId associated with a movie given by 
+ * movieId.
+ */
+router.delete('/:movieId/:commendId', async (req, res) => {
+    if (!req.params.movieId || !req.params.commendId) {
+        res.status(400).json({error: 'One or more id\'s are missing'});
+        return;
+    }
+
+    try {
+        let movie = await moviesData.get(req.params.movieId);
+
+        let found = false;
+        movie.comments.forEach( (value) => {
+            value._id = "" + value._id;
+            if (value._id === req.params.commendId) {
+                found = true;
+            }
+        });
+
+        if (!found) throw `Error: no comment associated with the commendId`;
+    } catch (e) {
+        res.status(400).json({error: "There is no movie associated with the id"});
+        return;
+    }
+
+    try {
+        let movieWithoutComment = await moviesData.removeComment(req.params.movieId, req.params.commendId);
+        res.status(200).json(movieWithoutComment);
+    } catch (e) {
+        res.status(500).json({error: e});
+    }
 });
 
 module.exports = router;
