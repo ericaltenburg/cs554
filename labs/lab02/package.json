@@ -1,0 +1,20 @@
+{
+  "name": "lab02",
+  "version": "1.0.0",
+  "description": "Lab02 CS554",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eric Altenburg 10443481",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^3.0.0"
+  }
+}
