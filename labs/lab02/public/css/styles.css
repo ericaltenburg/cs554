@@ -18118,64 +18118,59 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered td {
     border: 1px solid #ddd !important; } }
 
-/* That imports the entirety of bootstrap, taken from ../../node_modules/bootstrap/scss/bootstrap.scss
- we can optimize it by only selectively including the modules we need:
-*/
-/* 
- @import "functions";
- @import "variables";
- @import "mixins";
- @import "root";
- @import "reboot";
- @import "type";
- @import "images";
- @import "code";
- @import "grid";
- @import "tables";
- @import "forms";
- @import "buttons";
- @import "transitions";
- @import "dropdown";
- @import "button-group";
- @import "input-group";
- @import "custom-forms";
- @import "nav";
- @import "navbar";
- @import "card";
- @import "breadcrumb";
- @import "pagination";
- @import "badge";
- @import "jumbotron";
- @import "alert";
- @import "progress";
- @import "media";
- @import "list-group";
- @import "close";
- @import "modal";
- @import "tooltip";
- @import "popover";
- @import "carousel";
- @import "utilities";
- @import "print";
- */
-* {
-  box-sizing: border-box; }
+h1, h5, button, p, div {
+  font-family: "Courier New", monospace, sans-serif; }
 
-body,
-html {
-  background: white;
-  color: #666666;
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 14pt;
-  background-clip: border-box; }
+.btn {
+  background-color: #007eb7; }
 
-p {
-  font-size: 5.6; }
+/* The side navigation menu */
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  background-color: #007eb7;
+  position: fixed;
+  height: 100%;
+  overflow: auto; }
 
-section.book h2 {
-  border-bottom: 2px solid #000; }
+/* Sidebar links */
+.sidebar a {
+  display: flex;
+  flex-basis: auto;
+  color: black;
+  padding: 16px;
+  text-decoration: none; }
 
-section.book p {
-  font-size: 12pt; }
-  section.book p span {
-    font-style: italic; }
+/* Active/current link */
+.sidebar a.active {
+  background-color: #007eb7;
+  color: white; }
+
+/* Links on mouse-over */
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white; }
+
+/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px; }
+
+/* On screens that are less than 576px wide, make the sidebar into a topbar */
+@media screen and (max-width: 575px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative; }
+  div.content {
+    margin-left: 0; } }
+
+/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: left;
+    float: none;
+    display: block;
+    width: 100%; } }

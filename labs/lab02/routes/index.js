@@ -4,11 +4,11 @@ const app = express();
 app.use('../public', static);
 
 const constructorMethod = (app) => {
-    app.use('/', (req, res) => {
-        res.sendFile("index.html" , {root: __dirname + "/../public"});
+    app.get('/', (req, res) => {
+        res.sendFile("index.html", {root: __dirname + "/../public/html/"});
     });
     app.use('*', (req, res) => {
-        res.status(404).json({error: 'That route can not be found'});
+        res.status(404).sendFile("error.html", {root: __dirname + "/../public/html"});
     });
 };
 
