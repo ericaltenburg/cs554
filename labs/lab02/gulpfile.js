@@ -69,4 +69,4 @@ gulp.task('watch', function(done) {
     done();
 });
 
-gulp.task('defualt', gulp.series('watch'));
+gulp.task('default', gulp.series('watch'));
