@@ -1,0 +1,49 @@
+* {
+	box-sizing: border-box;
+}
+
+dl.changes {
+	color: darkblue
+}
+
+html,
+body {
+	font-size: 14pt;
+}
+
+html {
+	font-weight: lighter;
+}
+
+.error-list {
+	color: red;
+}
+
+#firstTerm {
+	color: #131313;
+}
+
+body {
+	background: #dedede;
+	font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+main {
+	max-width: 75%;
+	margin: auto;
+}
+
+header {
+	border-bottom: 1px solid #afafaf;
+}
+
+h1 {
+	color: #222;
+	margin-bottom: 5px;
+	font-size: 2rem;
+}
+
+p {
+	font-size: 1rem;
+	line-height: 2;
+}

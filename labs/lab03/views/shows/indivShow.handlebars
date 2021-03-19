@@ -1,0 +1,22 @@
+<div>
+    <h2>{{show.name}}</h2>
+    <img alt="{{show.name}}" src="{{img_src}}"/>
+    <dl class="changes">
+        <dt>Language</dt>
+        <dd>{{show.language}}</dd>
+        <dt>Genres</dt>
+        <dd>
+            <ul>
+                {{#each show.genres}}
+                    <li>{{this}}</li>
+                {{/each}}       
+            </ul>
+        </dd>
+        <dt>Average Rating</dt>
+        <dd>{{show.rating.average}}</dd>
+        <dt>Network</dt>
+        <dd>{{show.network.name}}</dd>
+        <dt>Summary</dt>
+        <dd>{{{show.summary}}}</dd>
+    </dl>
+</div>

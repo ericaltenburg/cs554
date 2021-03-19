@@ -1,0 +1,13 @@
+<h2>Popular Searches</h2>
+{{#if search_term.length}}
+<ul>
+    {{#each search_term}}
+    <li>
+        <p>{{this}}</p>
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
+{{#unless search_term.length}}
+<p class="not-found">We're sorry, but no popular search terms have been generated yet!</p>
+{{/unless}}

@@ -1,0 +1,13 @@
+<h2>Shows From Searching "{{search_term}}"</h2>
+{{#if shows.length}}
+<ul>
+    {{#each shows}}
+    <li>
+        <a href="/show/{{this.show.id}}">{{this.show.name}}</a>
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
+{{#unless shows.length}}
+<p class="not-found">We're sorry, but no results were found for {{term}}.</p>
+{{/unless}}

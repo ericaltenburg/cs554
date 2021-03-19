@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="/public/site.css">
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <main>
+        <form action="/search" method="POST" class="new-search-form">
+            <label for="firstTerm">
+                Search
+                <input id="firstTerm" type="text" name="searchTerm" placeholder="Search Term" value="{{term}}" class="full-width-input"/>
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+        <a href="/popularsearches">See a list of popular search terms</a>
+        {{{body}}}
+        <a href="/">Home</a>
+    </main>
+</body>
+</html>
