@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import md5 from 'blueimp-md5';
-import { Link } from 'react-router-dom';
-import noImage from '../img/download.jpeg';
+import { Link, useParams } from 'react-router-dom';
+import noImage from '../img/download.png';
 import {Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles} from '@material-ui/core';
 
 import '../App.css';
@@ -43,19 +43,21 @@ const hash = md5(stringToHash);
 const baseURL = 'https://gateway.marvel.com:443/v1/public/characters';
 const URL = baseURL + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
 
-const CharacterList = (props) => {
+const CharacterList = () => {
+    let { page } = useParams();
     const classes = useStyles();
     const [ loading, setLoading ] = useState(true);
     const [ characterData, setCharacterData ] = useState(undefined);
     const [ badLoad, setBadLoad ] = useState(false);
     let card = null;
+    const regex = /(<([^>]+)>)/gi;
 
     useEffect( () => {
-        console.log('page num was changed');
-        async function fetchData() {
+        console.log('character page num was changed');
+        async function fetchData () {
             try {
                 setLoading(true);
-                const { data } = await axios.get(`${URL}&offset=${parseInt(props.match.params.page)*20}`);
+                const { data } = await axios.get(`${URL}&offset=${parseInt(page)*20}`);
                 if (data.data.count===0) throw new Error(`No more entries found.`);
                 console.log(data)
                 setCharacterData(data.data.results);
@@ -67,7 +69,7 @@ const CharacterList = (props) => {
             }
         }
         fetchData();
-    }, [props.match.params.page]);
+    }, [page]);
 
     const buildCard = (character) => {
         return (
@@ -78,16 +80,19 @@ const CharacterList = (props) => {
                             <CardMedia
                                 className={classes.media}
                                 component='img'
-                                image={character.thumbnail.path.includes("image_not_available") ? noImage : character.thumbnail.path+'/standard_amazing.'+character.thumbnail.extension}
+                                image={character.thumbnail.path.includes("image_not_available") ? noImage : character.thumbnail.path+'/portrait_incredible.'+character.thumbnail.extension}
                                 title="Character Image"
+                                onError={ e => {
+                                    e.target.src=noImage;
+                                }}
                             />
                             <CardContent>
                                 <Typography className={classes.titleHead} gutterBottom variant='h6' component='h3'>
                                     {character.name}
                                 </Typography>
                                 <Typography variant='body2' color='textSecondary' component='p'>
-                                    {character.description}
-                                    <span>More Info</span>
+                                    {character.description ? character.description.replace(regex, '').substring(0,139).trim()+"..." : "No Description..."}
+                                    <span> More Info</span>
                                 </Typography>
                             </CardContent>
                         </Link>
@@ -114,11 +119,11 @@ const CharacterList = (props) => {
             </div>
         );
     } else {
-        if (parseInt(props.match.params.page) !== 0) {
+        if (parseInt(page) !== 0) {
             return (
                 <div>
-                    <Link className='pageprevnext' to={`/characters/page/${parseInt(props.match.params.page)-1}`}>Previous Page</Link> 
-					<Link className='pageprevnext' to={`/characters/page/${parseInt(props.match.params.page)+1}`}>Next Page</Link>
+                    <Link className='pageprevnext' to={`/characters/page/${parseInt(page)-1}`}>Previous Page</Link> 
+					<Link className='pageprevnext' to={`/characters/page/${parseInt(page)+1}`}>Next Page</Link>
                     <br />
                     <br />
                     <Grid container className={classes.grid} spacing={5}>
@@ -129,7 +134,7 @@ const CharacterList = (props) => {
         } else {
             return (
                 <div>
-                    <Link className="pageprevnext" to={`/characters/page/${parseInt(props.match.params.page)+1}`}>Next Page</Link>
+                    <Link className="pageprevnext" to={`/characters/page/${parseInt(page)+1}`}>Next Page</Link>
                     <br />
                     <br />
                     <Grid container className={classes.grid} spacing={5}>

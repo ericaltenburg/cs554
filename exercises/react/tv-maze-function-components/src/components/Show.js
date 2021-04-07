@@ -64,7 +64,8 @@ const Show = (props) => {
 				try {
 					setLoading(true);
 					const { data: show } = await axios.get(`http://api.tvmaze.com/shows/${props.match.params.id}`);
-					setShowData(show);
+					console.log(show);
+                    setShowData(show);
 					setBadLoad(false);
 					setLoading(false);
 				} catch (e) {

@@ -37,13 +37,25 @@ function App() {
                 <br />
                 <br />
                 <div className="App-body">
-                    <Route exact path="/" component={Home}/>
-                    <Route exact path="/characters/page/:page" component={CharacterList}/>
-                    <Route exact path="/characters/:id" component={Character}/>
-                    <Route exact path="/comics/page/:page" component={ComicList}/>
+                    <Route exact path="/">
+                        <Home />
+                    </Route>
+                    <Route exact path="/characters/page/:page">
+                        <CharacterList />
+                    </Route>
+                    <Route exact path="/characters/:id">
+                        <Character />
+                    </Route>
+                    <Route exact path="/comics/page/:page">
+                        <ComicList />
+                    </Route>
+                    <Route exact path="/comics/:id">
+                        <Comic />
+                    </Route>
+                    {/* <Route exact path="/comics/page/:page" component={ComicList}/>
                     <Route exact path="/comics/:id" component={Comic}/>
                     <Route exact path="/series/page/:page" component={SeriesList}/>
-                    <Route exact path="/series/:id" component={Series}/>
+                    <Route exact path="/series/:id" component={Series}/> */}
                 </div>
             </div>
         </Router>
