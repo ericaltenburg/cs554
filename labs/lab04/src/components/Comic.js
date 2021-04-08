@@ -60,7 +60,6 @@ const Comic = () => {
 
                 const { data } = await axios.get(URL);
                 if (data.data.count === 0) throw new Error(`No comic associated with that ID was found.`);
-                console.log(data);
                 setComicData(data.data.results[0]);
                 setLoading(false);
                 setBadLoad(false);
@@ -125,11 +124,6 @@ const Comic = () => {
                             </p>
 
                             <p>
-                                <dt className='title'>Characters Featured:</dt>
-                                { characters_inject }
-                            </p>
-
-                            <p>
                                 <dt className="title">Creators:</dt>
                                 {
                                     comicData && comicData.creators.available >= 1 ? (
@@ -145,6 +139,11 @@ const Comic = () => {
                                         <dd key="no_creators"><br />N/A</dd>
                                     )
                                 }
+                            </p>
+
+                            <p>
+                                <dt className='title'>Characters Featured:</dt>
+                                { characters_inject }
                             </p>
                         </dl>
                         <Link to={`/comics/page/0`}>Back to all comics...</Link>

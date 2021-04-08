@@ -52,10 +52,12 @@ function App() {
                     <Route exact path="/comics/:id">
                         <Comic />
                     </Route>
-                    {/* <Route exact path="/comics/page/:page" component={ComicList}/>
-                    <Route exact path="/comics/:id" component={Comic}/>
-                    <Route exact path="/series/page/:page" component={SeriesList}/>
-                    <Route exact path="/series/:id" component={Series}/> */}
+                    <Route exact path="/series/page/:page">
+                        <SeriesList />
+                    </Route>
+                    <Route exact path="/series/:id">
+                        <Series />
+                    </Route>
                 </div>
             </div>
         </Router>

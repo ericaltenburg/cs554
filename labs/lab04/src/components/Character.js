@@ -43,6 +43,7 @@ const Character = () => {
     const classes = useStyles();
     const regex = /(<([^>]+)>)/gi;
     let comics_inject = <dd key="no_comics"><br />N/A</dd>;
+    let series_inject = <dd key="no_series"><br />N/A</dd>;
 
     useEffect( () => {
         console.log("character was selected");
@@ -60,7 +61,6 @@ const Character = () => {
 
                 const { data } = await axios.get(URL);
                 if (data.data.count===0) throw new Error(`No character associated with that ID was found.`);
-                console.log(data);
                 setCharacterData(data.data.results[0]);
                 setLoading(false);
                 setBadLoad(false);
@@ -80,8 +80,22 @@ const Character = () => {
                     let num = comic.resourceURI.match(/\d+$/)[0];
 
                     if (characterData.comics.items.length > 1)
-                        return <dd key={comic.name}><Link to={`/comics/${num}`}>{comic.name}</Link><br /></dd>
-                    return <dd key={comic.name}><Link to={`/comics/${num}`}>{comic.name}</Link></dd>
+                        return <dd key={comic.resourceURI}><Link to={`/comics/${num}`}>{comic.name}</Link><br /></dd>
+                    return <dd key={comic.resourceURI}><Link to={`/comics/${num}`}>{comic.name}</Link></dd>
+                })}
+            </span>
+    }
+
+    if (characterData && characterData.series && characterData.series.available >=1) {
+        series_inject = 
+            <span>
+                <br />
+                {characterData.series.items.slice(0,20).map((the_series) => {
+                    let num = the_series.resourceURI.match(/\d+$/)[0];
+
+                    if (characterData.series.items.length > 1)
+                        return <dd key={the_series.resourceURI}><Link to={`/series/${num}`}>{the_series.name}</Link><br /></dd>
+                    return <dd key={the_series.resourceURI}><Link to={`/series/${num}`}>{the_series.name}</Link></dd>
                 })}
             </span>
     }
@@ -121,20 +135,25 @@ const Character = () => {
                             </p>
 
                             <p>
-                                <dt className="title">Comics:</dt>
+                                <dt className="title">Comics Featured:</dt>
                                 { comics_inject }
                             </p>
 
                             <p>
-                                <dt className="title">Events:</dt>
+                                <dt className="title">Series Featured:</dt>
+                                { series_inject }
+                            </p>
+
+                            <p>
+                                <dt className="title">Events Featured:</dt>
                                 {
                                     characterData && characterData.events && characterData.events.available >= 1 ? (
                                         <span>
                                             <br />
                                             {characterData.events.items.slice(0,20).map((the_event) => {
                                                 if (characterData.events.items.length > 1)
-                                                    return <dd key={the_event.name}>{the_event.name}<br /></dd>;
-                                                return <dd key={the_event.name}>{the_event.name}</dd>;
+                                                    return <dd key={the_event.resourceURI}>{the_event.name}<br /></dd>;
+                                                return <dd key={the_event.resourceURI}>{the_event.name}</dd>;
                                             })}
                                         </span>
                                     ) : (
@@ -144,33 +163,15 @@ const Character = () => {
                             </p>
 
                             <p>
-                                <dt className="title">Series:</dt>
-                                {
-                                    characterData && characterData.series && characterData.series.available >=1 ? (
-                                        <span>
-                                            <br />
-                                            {characterData.series.items.slice(0,20).map((the_series) => {
-                                                if (characterData.series.items.length > 1)
-                                                    return <dd key={the_series.name}>{the_series.name}<br /></dd>;
-                                                return <dd key={the_series.name}>{the_series.name}</dd>;
-                                            })}
-                                        </span>
-                                    ) : (
-                                        <dd key="no_series"><br />N/A</dd>
-                                    )
-                                }
-                            </p>
-
-                            <p>
-                                <dt className="title">Stories:</dt>
+                                <dt className="title">Stories Featured:</dt>
                                 {
                                     characterData && characterData.stories && characterData.stories.available >= 1 ? (
                                         <span>
                                             <br />
                                             {characterData.stories.items.slice(0,20).map((story) => {
                                                 if (characterData.stories.items.length > 1)
-                                                    return <dd key={story.name}>{story.name}<br /></dd>;
-                                                return <dd key={story.name}>{story.name}</dd>;
+                                                    return <dd key={story.resourceURI}>{story.name}<br /></dd>;
+                                                return <dd key={story.resourceURI}>{story.name}</dd>;
                                             })}
                                         </span>
                                     ) : (

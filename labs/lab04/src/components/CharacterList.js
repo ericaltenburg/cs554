@@ -3,6 +3,7 @@ import axios from 'axios';
 import md5 from 'blueimp-md5';
 import { Link, useParams } from 'react-router-dom';
 import noImage from '../img/download.png';
+import Search from './Search';
 import {Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles} from '@material-ui/core';
 
 import '../App.css';
@@ -48,6 +49,8 @@ const CharacterList = () => {
     const classes = useStyles();
     const [ loading, setLoading ] = useState(true);
     const [ characterData, setCharacterData ] = useState(undefined);
+    const [ searchData , setSearchData ] = useState(undefined);
+    const [ searchTerm, setSearchTerm ] = useState('');
     const [ badLoad, setBadLoad ] = useState(false);
     let card = null;
     const regex = /(<([^>]+)>)/gi;
@@ -57,10 +60,28 @@ const CharacterList = () => {
         async function fetchData () {
             try {
                 setLoading(true);
+                setSearchTerm('');
                 const { data } = await axios.get(`${URL}&offset=${parseInt(page)*20}`);
                 if (data.data.count===0) throw new Error(`No more entries found.`);
-                console.log(data)
                 setCharacterData(data.data.results);
+                setBadLoad(false);
+                setLoading(false);
+            } catch (e) {
+                setSearchTerm('');
+                setBadLoad(true);
+                console.log(e);
+            }
+        }
+        fetchData();
+    }, [page]);
+
+    useEffect( () => {
+        console.log('search useEffect fired');
+        async function fetchData () {
+            try {
+                console.log(`in fetch searchTerm: ${searchTerm}`);
+                const { data } = await axios.get(`${URL}&nameStartsWith=${searchTerm}`);
+                setSearchData(data.data.results);
                 setBadLoad(false);
                 setLoading(false);
             } catch (e) {
@@ -68,8 +89,17 @@ const CharacterList = () => {
                 console.log(e);
             }
         }
-        fetchData();
-    }, [page]);
+
+        if (searchTerm) {
+            console.log('searchTerm is set')
+            fetchData();
+        }
+    }, [ searchTerm ]);
+
+
+    const searchValue = async (value) => {
+        setSearchTerm(value);
+    }
 
     const buildCard = (character) => {
         return (
@@ -102,9 +132,15 @@ const CharacterList = () => {
         );
     };
 
-    card = characterData && characterData.map( (character) => {
-        return buildCard(character);
-    });
+    if (searchTerm) {
+        card = searchData && searchData.map((characters) => {
+            return buildCard(characters);
+        });
+    } else {
+        card = characterData && characterData.map( (character) => {
+            return buildCard(character);
+        });
+    }
 
     if (badLoad) {
         return(
@@ -122,8 +158,13 @@ const CharacterList = () => {
         if (parseInt(page) !== 0) {
             return (
                 <div>
+                    <Search searchValue={searchValue} />
+                    <br />
+                    <br />
                     <Link className='pageprevnext' to={`/characters/page/${parseInt(page)-1}`}>Previous Page</Link> 
 					<Link className='pageprevnext' to={`/characters/page/${parseInt(page)+1}`}>Next Page</Link>
+                    <br />
+                    <br />
                     <br />
                     <br />
                     <Grid container className={classes.grid} spacing={5}>
@@ -134,7 +175,12 @@ const CharacterList = () => {
         } else {
             return (
                 <div>
+                    <Search searchValue={searchValue} />
+                    <br />
+                    <br />
                     <Link className="pageprevnext" to={`/characters/page/${parseInt(page)+1}`}>Next Page</Link>
+                    <br />
+                    <br />
                     <br />
                     <br />
                     <Grid container className={classes.grid} spacing={5}>

@@ -84,7 +84,8 @@ const ShowList = (props) => {
 				try {
 					console.log(`in fetch searchTerm: ${searchTerm}`);
 					const { data } = await axios.get('http://api.tvmaze.com/search/shows?q=' + searchTerm);
-					setSearchData(data);
+					console.log(data);
+                    setSearchData(data);
 					setBadLoad(false);
 					setLoading(false);
 				} catch (e) {
