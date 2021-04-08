@@ -61,6 +61,7 @@ const CharacterList = () => {
             try {
                 setLoading(true);
                 setSearchTerm('');
+                if (Number.isNaN(parseInt(page)) || parseInt(page) < 0) throw new Error("Not a valid page number")
                 const { data } = await axios.get(`${URL}&offset=${parseInt(page)*20}`);
                 if (data.data.count===0) throw new Error(`No more entries found.`);
                 setCharacterData(data.data.results);
@@ -98,7 +99,7 @@ const CharacterList = () => {
 
 
     const searchValue = async (value) => {
-        setSearchTerm(value);
+        setSearchTerm(value.trim());
     }
 
     const buildCard = (character) => {
@@ -117,7 +118,7 @@ const CharacterList = () => {
                                 }}
                             />
                             <CardContent>
-                                <Typography className={classes.titleHead} gutterBottom variant='h6' component='h3'>
+                                <Typography className={classes.titleHead} gutterBottom variant='h6' component='h2'>
                                     {character.name}
                                 </Typography>
                                 <Typography variant='body2' color='textSecondary' component='p'>
