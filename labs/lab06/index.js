@@ -133,7 +133,7 @@ const resolvers = {
     Mutation: {
         uploadImage: async (_, args) => {
             const userPost = {
-                id: uuid(),
+                id: uuid.v4(),
                 url: args.url,
                 posterName: args.posterName ? args.posterName : '',
                 description: args.description ? args.description : '',
@@ -145,40 +145,68 @@ const resolvers = {
             return userPost;
         },
         updateImage: async (_, args) => {
+            // New Image post just in case the binned image is an unsplashed image
             let newPost = {
                 id: args.id
             }
 
+            let binResponse = await client.hexistsAsync(binned_set,args.id);
+            let userResponse = await client.hexistsAsync(user_set, args.id);
+            let isUserAndBinned = binResponse && userResponse;
+
             // 0 for not in cache, 1 for bin, and 2 for user
-            const cacheSet = (await client.hexistsAsync(binned_set,args.id)) ? 1 : ((await client.hexistsAsync(user_set, args.id)) ? 2 : 0);
-            
+            const cacheSet = (binResponse) ? 1 : ((userResponse) ? 2 : 0);
+
             let oldPost = '';
 
             if (cacheSet) {
-                oldPost = await client.hget(redis_sets[cacheSet-1], args.id);
+                oldPost = await client.hgetAsync(redis_sets[cacheSet-1], args.id);
                 oldPost = JSON.parse(oldPost);
             }
 
             newPost.url = !args.url ? (!oldPost.url ? '' : oldPost.url) : args.url;
             newPost.posterName = !args.posterName ? (!oldPost.posterName ? '' : oldPost.posterName) : args.posterName;
             newPost.description = !args.description ? (!oldPost.description ? '' : oldPost.description) : args.description;
-            newPost.userPosted = !args.userPosted ? (!oldPost.userPosted ? '' : oldPost.userPosted) : args.userPosted;
-            newPost.binned = !args.binned ? (!oldPost.binned ? '' : oldPost.binned) : args.binned;
+            newPost.userPosted = (args.userPosted === undefined) ? ((oldPost.userPosted === undefined) ? false : oldPost.userPosted) : args.userPosted;
+            newPost.binned = (args.binned === undefined) ? ((oldPost.binned === undefined) ? false : oldPost.binned) : args.binned;
+            let stringNewPost = JSON.stringify(newPost);
 
-            if (!newPost.binned && cacheSet) {
-                await client.hdel(redis_sets[cacheSet-1], newPost.id);
-            } else if (newPost.binned && !cacheSet) )
+            // Cases:
+            // unsplashed being binned cs = 0
+            // unsplashed being unbinned cs = 1
+            // user being binned cs = 2
+            // user being unbinned cs = 1
+
+            if (cacheSet === 1 && !newPost.binned) { // Unbin the image (case 2 and 4)
+                await client.hdelAsync(binned_set, args.id);
+
+                if (isUserAndBinned) {
+                    await client.hdelAsync(user_set, args.id);
+                    await client.hsetAsync(user_set, args.id, stringNewPost);
+                }
+            } else if ((cacheSet === 0 || cacheSet === 2) && newPost.binned) { // User post has to get binned
+                if (cacheSet === 2) { // update the user set cache with the new image
+                    await client.hdelAsync(user_set, args.id);
+                    await client.hsetAsync(user_set, args.id, stringNewPost);
+                }
+                await client.hsetAsync(binned_set, args.id, stringNewPost);
+            }
+
+            return newPost;
         },
         deleteImage: async (_, args) => {
+            if (!(await client.hexistsAsync(user_set, args.id))) {
+                throw new UserInputError("Error: id does not exist");
+            }
             let deletedPost = await client.hgetAsync(user_set, args.id);
             deletedPost = JSON.parse(deletedPost);
             if (deletedPost) {
-                await client.hdel(user_set, args.id);
+                await client.hdelAsync(user_set, args.id);
 
                 let deletedBinned = await client.hgetAsync(binned_set, args.id);
                 deletedBinned = JSON.parse(deletedBinned);
                 if (deletedBinned) {
-                    await client.hdel(binned_set, args.id);
+                    await client.hdelAsync(binned_set, args.id);
                 }
             }
 
