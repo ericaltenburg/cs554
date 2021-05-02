@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,154 @@
   to {
     transform: rotate(360deg);
   }
+} */
+Body {
+    background-color: gray;
+}
+
+.App {
+	text-align: center;
+}
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+.App-logo {
+	height: 80px;
+}
+
+input {
+	border: 1px solid gray;
+}
+.show-body {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+.App-header {
+	background-color: darkgray;
+	height: 200px;
+	padding: 20px;
+	color: #222;
+}
+
+.App-title {
+	font-size: 1.5em;
+	font-weight: bold;
+	color: black;
+}
+
+cite {
+	font-weight: bold;
+}
+table {
+	align-content: center;
+	margin: auto;
+}
+td {
+	padding: 10px;
+}
+
+.App-intro {
+	font-size: large;
+}
+.cap-first-letter:first-letter {
+	text-transform: capitalize;
+}
+.col-sm-6,
+col-md-4 {
+	border: 1px;
+}
+
+.hometext {
+	max-width: 60%;
+}
+.showlink {
+	padding: 0.4rem 0.8rem;
+	background-color: gray;
+	border-radius: 3px;
+	color: black;
+	text-decoration: none !important;
+	margin: 5px;
+}
+
+.showlink:hover {
+	color: blue;
+    text-decoration: underline;
+    text-decoration-color: blue;
+}
+
+.pageprevnext {
+	padding: 0.4rem 0.8rem;
+	background-color: #178577;
+	border-radius: 3px;
+	color: white;
+	
+	text-decoration: none !important;
+	margin: 5px;
+}
+
+.pageprevnext:hover {
+	background-color: transparent;
+	color: #178577;
+	border: 2px solid #178577;
+}
+
+li {
+	padding: 20px;
+}
+
+p {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+div {
+	text-align: center;
+}
+
+a {
+	color: #178577;
+	text-decoration: none !important;
+}
+
+ul a:hover {
+	background-color: transparent;
+	color: blue;
+}
+
+ul {
+	list-style: none;
+}
+
+.title {
+	font-weight: bold;
+	color: #178577;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+	input {
+		font-size: 16px;
+	}
+}
+
+dt,
+dl {
+	padding: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+dt {
+	display: inline-block;
+}
+
+dd {
+	display: inline;
+	margin-left: 5px;
 }
