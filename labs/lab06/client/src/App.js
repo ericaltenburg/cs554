@@ -2,7 +2,6 @@ import './App.css';
 import HomeFeed from './components/HomeFeed';
 import BinFeed from './components/BinFeed';
 import MyFeed from './components/MyFeed';
-import NewPost from './components/NewPost';
 import {
     ApolloClient,
     HttpLink,
@@ -14,6 +13,7 @@ import {
     Route,
     NavLink
 } from "react-router-dom";
+import NewPost from './components/NewPost';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
@@ -55,6 +55,9 @@ function App() {
                     </Route>
                     <Route path="/my-posts">
                         <MyFeed />
+                    </Route>
+                    <Route path="/new-post">
+                        <NewPost />
                     </Route>
                 </div>
             </div>

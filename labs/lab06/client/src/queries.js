@@ -5,8 +5,9 @@ const GET_NEW_UNSPLASH_IMAGES = gql`
         unsplashImages(pageNum: $pageNum) {
             id
             url
-            description
             posterName
+            description
+            userPosted
             binned
         }
     }
@@ -17,8 +18,9 @@ const GET_ALL_BINNED_IMAGES = gql`
         binnedImages {
             id
             url
-            description
             posterName
+            description
+            userPosted
             binned
         }
     }
@@ -29,8 +31,9 @@ const GET_ALL_USER_IMAGES = gql`
         userPostedImages {
             id
             url
-            description
             posterName
+            description
+            userPosted
             binned
         }
     }
@@ -51,23 +54,39 @@ const UPLOAD_IMAGE = gql`
 const UPDATE_IMAGE = gql`
     mutation updateImage(
         $id: ID!
-        $userPosted: Boolean
         $url: String
         $posterName: String
         $description: String
+        $userPosted: Boolean
+        $binned: Boolean
     ) {
         updateImage(
             id: $id
-            userPosted: $userPosted
             url: $url
             posterName: $posterName
             description: $description
+            userPosted: $userPosted
+            binned: $binned
         ) {
             id
-            userPosted
             url
             posterName
             description
+            userPosted
+            binned
+        }
+    }
+`;
+
+const DELETE_IMAGE = gql`
+    mutation deleteImage ($id:ID!) {
+        deleteImage(id:$id) {
+            id
+            url
+            posterName
+            description
+            userPosted
+            binned
         }
     }
 `;
@@ -77,7 +96,8 @@ const exportedObject = {
     GET_ALL_BINNED_IMAGES,
     GET_ALL_USER_IMAGES,
     UPLOAD_IMAGE,
-    UPDATE_IMAGE
+    UPDATE_IMAGE,
+    DELETE_IMAGE
 };
 
 export default exportedObject;

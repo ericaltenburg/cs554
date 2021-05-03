@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {Card, CardHeader, CardMedia, Grid, makeStyles} from '@material-ui/core';
+import {Card, CardHeader, CardMedia, Grid, makeStyles, Button} from '@material-ui/core';
+import Box from '@material-ui/core/Box'
 import queries from '../queries';
 import { useQuery } from '@apollo/client';
 import '../App.css'
 import AddToBin from './AddToBin';
-
-const queryTypes = [queries.GET_ALL_BINNED_IMAGES, queries.GET_ALL_USER_IMAGES];
 
 const useStyles = makeStyles({
 	card: {
@@ -36,16 +35,17 @@ const HomeFeed = () => {
     const classes = useStyles();
     const [ pageNum, setPageNum ] = useState(1);
     const [ imageData, setImageData ] = useState([]);
-    const { loading, error, data, refetch } = useQuery(queries.GET_NEW_UNSPLASH_IMAGES, {
-        // fetchPolicy: 'no-cache',
+    const { loading, error, data } = useQuery(queries.GET_NEW_UNSPLASH_IMAGES, {
+        fetchPolicy: 'no-cache',
         variables: { pageNum }
     });
     let card = null;
 
     useEffect(() => {
         if (data) {
-            const combinedImages = [...imageData,...data.unsplashImages];
-            setImageData(combinedImages);
+            // This would append on but since it refreshed, constantly scrolling down is annoying so I made it just only show new images
+            // const combinedImages = [...imageData,...data.unsplashImages];
+            setImageData(data.unsplashImages);
         }
     }, [data]);
 
@@ -75,7 +75,6 @@ const HomeFeed = () => {
 
     const incrementPage = () => {
         setPageNum(pageNum+1);
-        refetch();
     }
 
     if (loading) {
@@ -100,9 +99,15 @@ const HomeFeed = () => {
             <Grid container className={classes.grid} spacing={5}>
                 {card}
             </Grid>
-            <br />
-            <br />
-            <button onClick={() => {incrementPage();}}>Get More</button>
+            <Box p={3}>
+                <Button 
+                    onClick={() => {incrementPage();}}
+                    variant="contained"
+                >
+                    Get More
+                </Button>
+            </Box>
+            
         </div>
     );
 }

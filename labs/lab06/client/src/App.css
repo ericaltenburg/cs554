@@ -37,7 +37,7 @@
   }
 } */
 Body {
-    background-color: gray;
+    background-color: darkgray;
 }
 
 .App {
@@ -64,7 +64,7 @@ input {
 }
 
 .App-header {
-	background-color: darkgray;
+	background-color: gray;
 	height: 200px;
 	padding: 20px;
 	color: #222;
@@ -73,7 +73,7 @@ input {
 .App-title {
 	font-size: 1.5em;
 	font-weight: bold;
-	color: black;
+	color: white;
 }
 
 cite {
@@ -103,7 +103,7 @@ col-md-4 {
 }
 .showlink {
 	padding: 0.4rem 0.8rem;
-	background-color: gray;
+	background-color: darkgray;
 	border-radius: 3px;
 	color: black;
 	text-decoration: none !important;
@@ -114,6 +114,16 @@ col-md-4 {
 	color: blue;
     text-decoration: underline;
     text-decoration-color: blue;
+    background-color: gray;
+}
+
+.uploadLink {
+    padding: 0.4rem 0.8rem;
+	background-color: darkred;
+	border-radius: 3px;
+	color: white;
+	text-decoration: none !important;
+	margin: 5px;
 }
 
 .pageprevnext {

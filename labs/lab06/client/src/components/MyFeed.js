@@ -4,6 +4,7 @@ import queries from '../queries';
 import { useQuery } from '@apollo/client';
 import '../App.css'
 import AddToBin from './AddToBin';
+import DeletePost from './DeletePost';
 import {
     BrowserRouter as Router,
     Route,
@@ -32,7 +33,8 @@ const useStyles = makeStyles({
 	button: {
 		color: '#1e8678',
 		fontWeight: 'bold',
-		fontSize: 12
+		fontSize: 12,
+        padding: '10px'
 	}
 });
 
@@ -51,7 +53,9 @@ const MyFeed = () => {
         }
     }, [data]);
 
-    const buildCard = (image) => {
+    const BuildCard = ({image}) => {
+        const [ deleted, setDeleted ] = useState(false);
+
         return (
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={image.id}>
                 <Card className={classes.card} variant="outlined">
@@ -65,20 +69,41 @@ const MyFeed = () => {
                         image={image.url}
                         title="Bintrest Image"
                     />
-                    <AddToBin image={image} />
+                    <br />
+                    <br />
+                    <Grid container spacing={5}>
+                        <Grid item xs={6} key={`${image.id}-add`}>
+                            <AddToBin image={image} deleted={deleted} />
+                        </Grid>
+                        <Grid item xs={6} key={`${image.id}-remove`}>
+                            <DeletePost image={image} deleted={deleted} setDeleted={() => {setDeleted(true)}} />
+                        </Grid>
+                    </Grid>
+                    <br />
+                    <br />
                 </Card>
             </Grid>
         );
     };
 
     card = imageData && imageData.map((image) => {
-        return buildCard(image);
+        return <BuildCard image={image} />;
     });
 
     if (!imageData.length) {
         return (
             <div>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={"uploadImageLink"}>
+                    <Link className="uploadLink" to="/new-post">Upload a Post</Link>
+                </Grid>
+                <br />
+                <br />
                 <h2>Nothing to see here...</h2>
+                <Router>
+                    <Route path="/new-post">
+                        <NewPost />
+                    </Route>
+                </Router>
             </div>
         );
     }
@@ -102,7 +127,9 @@ const MyFeed = () => {
 
     return (
         <div>
-            <Link className="showlink" to="/new-post">New Post</Link>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={"uploadImageLink"}>
+                <Link className="uploadLink" to="/new-post">Upload a Post</Link>
+            </Grid>
             <br />
             <br />
             <Grid container className={classes.grid} spacing={5}>

@@ -200,14 +200,18 @@ const resolvers = {
             }
             let deletedPost = await client.hgetAsync(user_set, args.id);
             deletedPost = JSON.parse(deletedPost);
+            console.log(deletedPost);
             if (deletedPost) {
                 await client.hdelAsync(user_set, args.id);
 
                 let deletedBinned = await client.hgetAsync(binned_set, args.id);
                 deletedBinned = JSON.parse(deletedBinned);
+                console.log(deletedBinned);
                 if (deletedBinned) {
                     await client.hdelAsync(binned_set, args.id);
                 }
+                deletedPost.userPosted = false;
+                deletedPost.binned = false;
             }
 
             return deletedPost;
