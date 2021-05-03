@@ -2,11 +2,23 @@ import { useState, useEffect } from 'react';
 import queries from '../queries';
 import { useMutation } from '@apollo/client';
 import '../App.css';
-import { Button } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Box from '@material-ui/core/Box';
 
+
+const useStyles = makeStyles({
+	removedBin: {
+		background: 'darkred',
+        color: 'white',
+        '&:hover': {
+            color: "black",
+        },
+	}
+});
+
 const DeletePost = ({ image, deleted, setDeleted }) => {
+    const classes = useStyles();
     const [ imagePost, setImagePost ] = useState(image);
     const [ deleteImage ] = useMutation(queries.DELETE_IMAGE);
 
@@ -39,7 +51,7 @@ const DeletePost = ({ image, deleted, setDeleted }) => {
                 <Button 
                     onClick={() => { handleDelete(); }}
                     variant="contained"
-                    color="secondary"
+                    className={classes.removedBin}
                     startIcon={<DeleteIcon />}
                 >
                     Delete post

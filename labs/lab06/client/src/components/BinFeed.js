@@ -40,8 +40,8 @@ const BinFeed = () => {
 
     useEffect(() => {
         if (data) {
-            const combinedImages = [...imageData,...data.binnedImages];
-            setImageData(combinedImages);
+            // const combinedImages = [...imageData,...data.binnedImages];
+            setImageData(data.binnedImages);
         }
     }, [data]);
 

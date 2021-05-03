@@ -2,12 +2,29 @@ import { useState, useEffect } from 'react';
 import queries from '../queries';
 import { useMutation } from '@apollo/client';
 import '../App.css';
-import { Button } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import Box from '@material-ui/core/Box'
 
+const useStyles = makeStyles({
+	removedBin: {
+		background: 'darkred',
+        color: 'white',
+        '&:hover': {
+            color: "black",
+        },
+	},
+    disabledStuff : {
+        '&:disabled': {
+            color: "black",
+        },
+        color: 'black'
+    }
+});
+
 const AddToBin = (props) => {
+    const classes = useStyles();
     const [ imagePost, setImagePost ] = useState(props.image);
     const [ updateImage ] = useMutation(queries.UPDATE_IMAGE);
 
@@ -53,7 +70,7 @@ const AddToBin = (props) => {
                 <Button 
                     onClick={() => { handleUnbin(); }}
                     variant="contained"
-                    color="secondary"
+                    className = {props.deleted ? classes.disabledStuff : classes.removedBin}
                     startIcon={<DeleteIcon />}
                     disabled={props.deleted}
                 >
@@ -69,6 +86,7 @@ const AddToBin = (props) => {
                     variant="contained"
                     startIcon={<SaveIcon />}
                     disabled={props.deleted}
+                    className= {props.deleted ? classes.disabledStuff : ''}
                 >
                     Add to bin
                 </Button>

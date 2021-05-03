@@ -48,8 +48,8 @@ const MyFeed = () => {
 
     useEffect(() => {
         if (data) {
-            const combinedImages = [...imageData,...data.userPostedImages];
-            setImageData(combinedImages);
+            // const combinedImages = [...imageData,...data.userPostedImages];
+            setImageData(data.userPostedImages);
         }
     }, [data]);
 

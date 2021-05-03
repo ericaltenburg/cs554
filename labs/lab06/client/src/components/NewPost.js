@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import queries from '../queries';
 import { useMutation } from '@apollo/client';
 import '../App.css';
-import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router';
 
 const NewPost = (props) => {
