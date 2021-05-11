@@ -1,35 +1,35 @@
 <template>
     <div>
         <div v-if="!this.badLoad">
-            <h3>{{this.series.title}}</h3>
+            <h1>{{this.series.title}}</h1>
             <br />
-            <img :src="this.series.thumbnail.path+'/portrait_incredible.'+this.series.thumbnail.extension" />
+            <img :src="this.series.thumbnail.path+'/portrait_incredible.'+this.series.thumbnail.extension" :alt="this.series.title"/>
             <br />
-            <h4>Description:</h4>
+            <h2>Description:</h2>
             <p v-if="!this.series.description">N/A</p>
             <span v-else v-html="this.series.description"></span>
             <br />
-            <h4>Start Year</h4>
+            <h2>Start Year</h2>
             <p v-if="!this.series.startYear">N/A</p>
             <span v-else v-html="this.series.startYear"></span>
             <br />
-            <h4>End Year</h4>
+            <h2>End Year</h2>
             <p v-if="!this.series.endYear">N/A</p>
             <span v-else v-html="this.series.endYear"></span>
             <br />
-            <h4>Creators:</h4>
+            <h2>Creators:</h2>
             <ul v-if="!this.noCreators">
                 <li v-for="person in this.series.creators.items" :key="person.resourceURI.match(/\d+$/)[0]">{{person.name}} - {{person.role}}</li>
             </ul>
             <p v-else>N/A</p>
-            <h4>Comics Featured:</h4>
+            <h2>Comics Featured:</h2>
             <ul v-if="!this.noComics">
                 <li v-for="comic_book in this.series.comics.items.slice(0,20)" :key="comic_book.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/comics/' + (comic_book.resourceURI.match(/\d+$/)[0])}">{{comic_book.name}}</router-link>
                 </li>
             </ul>
             <p v-else>N/A</p>
-            <h4>Characters Featured:</h4>
+            <h2>Characters Featured:</h2>
             <ul v-if="!this.noCharacters">
                 <li v-for="character in this.series.characters.items.slice(0,20)" :key="character.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/characters/' + (character.resourceURI.match(/\d+$/)[0])}">{{character.name}}</router-link>
@@ -117,7 +117,7 @@ ul {
   padding: 0;
 }
 a {
-  color: #42b983;
+  color: #008b00;
 }
 span {
   text-align: center;
@@ -126,5 +126,8 @@ span {
 div {
   max-width: 50%;
   margin: 0 auto;
+}
+p {
+      color: #767676;
 }
 </style>

@@ -1,22 +1,22 @@
 <template>
     <div>
         <div v-if="!this.badLoad">
-            <h3>{{this.character.name}}</h3>
+            <h1>{{this.character.name}}</h1>
             <br />
-            <img :src="this.character.thumbnail.path+'/portrait_incredible.'+this.character.thumbnail.extension" />
+            <img :src="this.character.thumbnail.path+'/portrait_incredible.'+this.character.thumbnail.extension" :alt="this.character.name"/>
             <br />
-            <h4>Description:</h4>
+            <h2>Description:</h2>
             <p v-if="!this.character.description">N/A</p>
             <span v-else v-html="this.character.description"></span>
             <br />
-            <h4>Comics:</h4>
+            <h2>Comics:</h2>
             <ul v-if="!this.noComics">
                 <li v-for="comic_book in this.character.comics.items.slice(0,20)" :key="comic_book.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/comics/' + (comic_book.resourceURI.match(/\d+$/)[0])}">{{comic_book.name}}</router-link>
                 </li>
             </ul>
             <p v-else>N/A</p>
-            <h4>Series:</h4>
+            <h2>Series:</h2>
             <ul v-if="!this.noSeries">
                 <li v-for="series_thing in this.character.series.items.slice(0,20)" :key="series_thing.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/series/' + (series_thing.resourceURI.match(/\d+$/)[0])}">{{series_thing.name}}</router-link>
@@ -25,7 +25,7 @@
             <p v-else>N/A</p>
         </div>
         <div v-else>
-            <p>404 Error</p>
+            <p class="">404 Error</p>
         </div>
         <br />
         <br />
@@ -102,7 +102,7 @@ ul {
   padding: 0;
 }
 a {
-  color: #42b983;
+  color: #008b00;
 }
 span {
   text-align: center;
@@ -111,5 +111,8 @@ span {
 div {
   max-width: 50%;
   margin: 0 auto;
+}
+p {
+    color: #767676;
 }
 </style>

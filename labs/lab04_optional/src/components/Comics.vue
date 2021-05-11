@@ -1,23 +1,23 @@
 <template>
     <div>
         <div v-if="!this.badLoad">
-            <h3>{{this.comics.title}}</h3>
+            <h1>{{this.comics.title}}</h1>
             <br />
-            <img :src="this.comics.thumbnail.path+'/portrait_incredible.'+this.comics.thumbnail.extension" />
+            <img :src="this.comics.thumbnail.path+'/portrait_incredible.'+this.comics.thumbnail.extension" :alt="this.comics.title"/>
             <br />
-            <h4>Description:</h4>
+            <h2>Description:</h2>
             <p v-if="!this.comics.description">N/A</p>
             <span v-else v-html="this.comics.description"></span>
-            <h4>Page Count:</h4>
+            <h2>Page Count:</h2>
             <p v-if="!this.comics.pageCount">N/A</p>
             <span v-else v-html="this.comics.pageCount"></span>
             <br />
-            <h4>Creators:</h4>
+            <h2>Creators:</h2>
             <ul v-if="!this.noCreators">
                 <li v-for="person in this.comics.creators.items" :key="person.resourceURI.match(/\d+$/)[0]">{{person.name}} - {{person.role}}</li>
             </ul>
             <p v-else>N/A</p>
-            <h4>Characters Featured:</h4>
+            <h2>Characters Featured:</h2>
             <ul v-if="!this.noCharacters">
                 <li v-for="character in this.comics.characters.items.slice(0,20)" :key="character.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/characters/' + (character.resourceURI.match(/\d+$/)[0])}">{{character.name}}</router-link>
@@ -103,7 +103,7 @@ ul {
   padding: 0;
 }
 a {
-  color: #42b983;
+  color: #008b00;
 }
 span {
   text-align: center;
@@ -112,5 +112,8 @@ span {
 div {
   max-width: 50%;
   margin: 0 auto;
+}
+p {
+      color: #767676;
 }
 </style>

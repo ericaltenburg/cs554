@@ -1,5 +1,6 @@
 <template>
     <div>
+            <h1>OPTIONAL LAB 4</h1>
             <p>
                 This is a single page application showcasing vuejs to serve information from Marvel Comics such as the characters, comics, and series.
             </p>
@@ -44,5 +45,22 @@ export default {
 </script>
 
 <style scoped>
-
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+a {
+  color: #008b00;
+}
+span {
+  text-align: center;
+  max-width: 50%;
+}
+div {
+  max-width: 50%;
+  margin: 0 auto;
+}
 </style>
