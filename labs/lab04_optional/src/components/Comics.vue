@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="!badLoad">
+        <div v-if="!this.badLoad">
             <h3>{{this.comics.title}}</h3>
             <br />
             <img :src="this.comics.thumbnail.path+'/portrait_incredible.'+this.comics.thumbnail.extension" />
@@ -13,12 +13,12 @@
             <span v-else v-html="this.comics.pageCount"></span>
             <br />
             <h4>Creators:</h4>
-            <ul v-if="!noCreators">
+            <ul v-if="!this.noCreators">
                 <li v-for="person in this.comics.creators.items" :key="person.resourceURI.match(/\d+$/)[0]">{{person.name}} - {{person.role}}</li>
             </ul>
             <p v-else>N/A</p>
             <h4>Characters Featured:</h4>
-            <ul v-if="!noCharacters">
+            <ul v-if="!this.noCharacters">
                 <li v-for="character in this.comics.characters.items.slice(0,20)" :key="character.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/characters/' + (character.resourceURI.match(/\d+$/)[0])}">{{character.name}}</router-link>
                 </li>
@@ -59,20 +59,28 @@ export default {
     },
     methods: {
         getComics (id) {
-            const URL = baseURL + id + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
+            if (isNaN(parseInt(id)) || parseInt(id) < 0) {
+                this.badLoad = true;
+            } else {
+                const URL = baseURL + id + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
 
-            axios
-            .get(URL)
-            .then(({ data }) => {
-                if (data.data.count === 0) {
+                axios
+                .get(URL)
+                .then(({ data }) => {
+                    if (data.data.count === 0) {
+                        this.badLoad = true;
+                    } else {
+                        this.comics = data.data.results[0];
+                        this.noCharacters = data.data.results[0].characters.items.length === 0;
+                        this.noCreators = data.data.results[0].creators.items.length === 0;
+                        this.badLoad = false;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
                     this.badLoad = true;
-                } else {
-                    this.comics = data.data.results[0];
-                    this.noCharacters = data.data.results[0].characters.items.length === 0;
-                    this.noCreators = data.data.results[0].creators.items.length === 0;
-                    this.badLoad = false;
-                }
-            });
+                });
+            }
         }
     },
     created() {

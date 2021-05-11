@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="!badLoad">
+        <div v-if="!this.badLoad">
             <h3>{{this.character.name}}</h3>
             <br />
             <img :src="this.character.thumbnail.path+'/portrait_incredible.'+this.character.thumbnail.extension" />
@@ -10,14 +10,14 @@
             <span v-else v-html="this.character.description"></span>
             <br />
             <h4>Comics:</h4>
-            <ul v-if="!noComics">
+            <ul v-if="!this.noComics">
                 <li v-for="comic_book in this.character.comics.items.slice(0,20)" :key="comic_book.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/comics/' + (comic_book.resourceURI.match(/\d+$/)[0])}">{{comic_book.name}}</router-link>
                 </li>
             </ul>
             <p v-else>N/A</p>
             <h4>Series:</h4>
-            <ul v-if="!noSeries">
+            <ul v-if="!this.noSeries">
                 <li v-for="series_thing in this.character.series.items.slice(0,20)" :key="series_thing.resourceURI.match(/\d+$/)[0]">
                     <router-link :to="{path:'/series/' + (series_thing.resourceURI.match(/\d+$/)[0])}">{{series_thing.name}}</router-link>
                 </li>
@@ -58,20 +58,28 @@ export default {
     },
     methods: {
         getCharacter (id) {
-            const URL = baseURL + id + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
+            if (isNaN(parseInt(id)) || parseInt(id) < 0) {
+                this.badLoad = true;
+            } else {
+                const URL = baseURL + id + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
 
-            axios
-            .get(URL)
-            .then(({ data }) => {
-                if (data.data.count === 0) {
+                axios
+                .get(URL)
+                .then(({ data }) => {
+                    if (data.data.count === 0) {
+                        this.badLoad = true;
+                    } else {
+                        this.character = data.data.results[0];
+                        this.noComics = data.data.results[0].comics.items.length === 0;
+                        this.noSeries = data.data.results[0].series.items.length === 0;
+                        this.badLoad = false;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
                     this.badLoad = true;
-                } else {
-                    this.character = data.data.results[0];
-                    this.noComics = data.data.results[0].comics.items.length === 0;
-                    this.noSeries = data.data.results[0].series.items.length === 0;
-                    this.badLoad = false;
-                }
-            });
+                });
+            }
         }
     },
     created() {

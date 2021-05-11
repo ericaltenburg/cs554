@@ -1,15 +1,15 @@
 <template>
     <div>
-        <div v-if="!badLoad">
-            <div v-if="!isLastPage">
-                <router-link :to="{path:'/comics/page/' + (pageNum+1)}">Next Page</router-link>
+        <div v-if="!this.badLoad">
+            <div v-if="!this.isLastPage">
+                <router-link :to="{path:'/comics/page/' + (this.pageNum+1)}">Next Page</router-link>
             </div>
             <br />
-            <div v-if="pageNum !== 0">
-                <router-link :to="{path:'/comics/page/' + (pageNum-1)}">Previous Page</router-link>
+            <div v-if="this.pageNum !== 0">
+                <router-link :to="{path:'/comics/page/' + (this.pageNum-1)}">Previous Page</router-link>
             </div>
             <ul>
-                <li v-for="(comic,index) in comics" :key="index">
+                <li v-for="(comic,index) in this.comics" :key="index">
                     <router-link :to="{path:'/comics/'+comic.id}">{{comic.title}}</router-link>
                 </li>
             </ul>
@@ -44,23 +44,34 @@ export default {
     },
     methods: {
         getComicsList (page) {
-            axios
-            .get(`${URL}&offset=${parseInt(page)*20}`)
-            .then(({ data }) => {
-                if (data.data.count === 0) {
+            if (isNaN(parseInt(page)) || parseInt(page) < 0) {
+                this.badLoad = true;
+            } else {
+                axios
+                .get(`${URL}&offset=${parseInt(page)*20}`)
+                .then(({ data }) => {
+                    if (data.data.count === 0) {
+                        this.badLoad = true;
+                    } else {
+                        this.comics = data.data.results;
+                        this.badLoad = false;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
                     this.badLoad = true;
-                } else {
-                    this.comics = data.data.results;
-                    this.badLoad = false;
-                }
-            });
-            axios
-            .get(`${URL}&offset=${(parseInt(page)+1)*20}`)
-            .then(({ data }) => {
-                if (data.data.count === 0){
-                    this.isLastPage = true;
-                }
-            });
+                });
+
+                axios
+                .get(`${URL}&offset=${(parseInt(page)+1)*20}`)
+                .then(({ data }) => {
+                    if (data.data.count === 0){
+                        this.isLastPage = true;
+                    } else {
+                        this.isLastPage = false;
+                    }
+                });
+            }
         },
         setPageNum (page) {
             this.pageNum = parseInt(page);
