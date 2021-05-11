@@ -62,6 +62,7 @@ const Character = () => {
                 const { data } = await axios.get(URL);
                 if (data.data.count===0) throw new Error(`No character associated with that ID was found.`);
                 setCharacterData(data.data.results[0]);
+                console.log(data);
                 setLoading(false);
                 setBadLoad(false);
             } catch (e) {
