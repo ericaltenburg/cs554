@@ -61,6 +61,7 @@ const Comic = () => {
                 const { data } = await axios.get(URL);
                 if (data.data.count === 0) throw new Error(`No comic associated with that ID was found.`);
                 setComicData(data.data.results[0]);
+                console.log(data);
                 setLoading(false);
                 setBadLoad(false);
             } catch (e) {

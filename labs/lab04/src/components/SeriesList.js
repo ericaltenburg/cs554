@@ -63,6 +63,7 @@ const SeriesList = () => {
                 setSearchTerm('');
                 if (Number.isNaN(parseInt(page)) || parseInt(page) < 0) throw new Error("Not a valid page number")
                 const { data } = await axios.get(`${URL}&offset=${parseInt(page)*20}`);
+                console.log(data);
                 if (data.data.count === 0) throw new Error(`No more entries found.`);
                 setSeriesData(data.data.results);
                 setBadLoad(false);

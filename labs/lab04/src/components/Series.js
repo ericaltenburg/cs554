@@ -60,6 +60,7 @@ const Comic = () => {
                 const URL = baseURL + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
 
                 const { data } = await axios.get(URL);
+                console.log(data);
                 if (data.data.count === 0) throw new Error(`No series associated with that ID was found.`);
                 setSeriesData(data.data.results[0]);
                 setLoading(false);

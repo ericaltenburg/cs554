@@ -65,6 +65,7 @@ const ComicList = () => {
                 const { data } = await axios.get(`${URL}&offset=${parseInt(page)*20}`);
                 if (data.data.count === 0) throw new Error(`No more entries found.`);
                 setComicData(data.data.results);
+                console.log(data);
                 setBadLoad(false);
                 setLoading(false);
             } catch (e) {
